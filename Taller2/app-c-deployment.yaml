@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.26.0 (40646f47)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: app-c
+  name: app-c
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: app-c
+  strategy: {}
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert
+        kompose.version: 1.26.0 (40646f47)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: app-c
+    spec:
+      containers:
+        - env:
+            - name: db_database
+              value: zdb
+            - name: db_host
+              value: estudiante_zdb_1
+            - name: db_password
+              value: "123456"
+            - name: db_user
+              value: root
+            - name: model_path
+              value: ../M_1/data/model.pkl
+          image: app-c
+          name: app_c
+          ports:
+            - containerPort: 8503
+            - containerPort: 8003
+          resources:
+            limits:
+              cpu: 300m
+              memory: "524288e3"
+      restartPolicy: Always
+status: {}

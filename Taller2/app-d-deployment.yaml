@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.26.0 (40646f47)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: app-d
+  name: app-d
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: app-d
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert
+        kompose.version: 1.26.0 (40646f47)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: app-d
+    spec:
+      containers:
+        - image: app-d
+          name: app_d
+          ports:
+            - containerPort: 8504
+            - containerPort: 8004
+          resources:
+            limits:
+              cpu: "1"
+              memory: "838860800"
+          volumeMounts:
+            - mountPath: /app
+              name: app-d-claim0
+      restartPolicy: Always
+      volumes:
+        - name: app-d-claim0
+          persistentVolumeClaim:
+            claimName: app-d-claim0
+status: {}

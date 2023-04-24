@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.26.0 (40646f47)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: app-a
+  name: app-a
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: app-a
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert
+        kompose.version: 1.26.0 (40646f47)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: app-a
+    spec:
+      containers:
+        - env:
+            - name: MYSQL_DATABASE
+              value: xdb
+            - name: MYSQL_HOST
+              value: estudiante_xdb_1
+            - name: MYSQL_PASSWORD
+              value: "123456"
+            - name: MYSQL_USER
+              value: root
+          image: app-a
+          name: app_a
+          ports:
+            - containerPort: 8501
+            - containerPort: 8001
+          resources:
+            limits:
+              cpu: "1"
+              memory: "838860800"
+          volumeMounts:
+            - mountPath: /APIA
+              name: app-a-claim0
+            - mountPath: /F_1/data/covertype
+              name: app-a-claim1
+      restartPolicy: Always
+      volumes:
+        - name: app-a-claim0
+          persistentVolumeClaim:
+            claimName: app-a-claim0
+        - name: app-a-claim1
+          persistentVolumeClaim:
+            claimName: app-a-claim1
+status: {}

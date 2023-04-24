@@ -1,0 +1,23 @@
+# Dockerfile
+
+# Use the official Python image as the parent image
+FROM python:3.9
+
+RUN pip install uvicorn
+
+# Set the working directory to /APIC
+WORKDIR /APIC
+
+# Copy the rest of the application code into the container at /APIC
+COPY . .
+
+# Install any needed packages specified in requirements.txt
+RUN pip install jupyter==1.0.0 -U && pip install jupyterlab==3.6.1
+RUN pip install -r requirements.txt
+RUN pip install sqlalchemy
+
+# Download the dataset and insert into the MySQL database
+RUN python main.py
+
+# Start the API server
+CMD ["bash", "-c", "uvicorn main:app --host 0.0.0.0 --port 8503 & jupyter lab --ip 0.0.0.0 --port 8003 --allow-root --no-browser"]

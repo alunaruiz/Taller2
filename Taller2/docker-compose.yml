@@ -1,0 +1,113 @@
+version: '3'
+services:
+  db_x:
+    image: mysql:latest
+    ports:
+      - "3306:3306"    
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_DATABASE: xdb
+    hostname: estudiante_xdb_1
+    volumes:
+      - ./F:/var/lib/mysql
+  db_z:
+    image: mysql:latest
+    ports:
+      - '3307:3307'
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_DATABASE: zdb      
+    hostname: estudiante_zdb_1
+    volumes:
+      - ./M:/var/lib/mysql
+  model:
+    build: ./model
+    volumes:
+      - ./model:/app/model
+    ports:
+      - "3308:3308"     
+#API_A
+  app_a:
+    build: ./APIA
+    ports:
+      - "8501:8501"
+      - "8001:8001"
+    volumes:
+      - ./APIA:/APIA:rw
+      - ./F_1/data/covertype:/F_1/data/covertype:rw
+    environment:
+      MYSQL_HOST: estudiante_xdb_1
+      MYSQL_USER: root
+      MYSQL_PASSWORD: 123456
+      MYSQL_DATABASE: xdb
+    deploy:
+      replicas: 1
+      resources:
+        limits:
+          cpus: "1"
+          memory: 800M
+#API_B
+  app_b:
+    build: ./APIB
+    ports:
+      - "8502:8502"
+      - "8002:8002"
+    volumes:
+      - ./APIB:/APIB:rw
+      - ./M_1/data:/M_1/data:rw
+    environment:
+      MYSQL_HOST: estudiante_xdb_1
+      MYSQL_USER: root
+      MYSQL_PASSWORD: 123456
+      MYSQL_DATABASE: xdb
+    deploy:
+      replicas: 1
+      resources:
+        limits:
+          cpus: '1'
+          memory: 800M
+        reservations:
+          memory: 800M
+#API_C
+  app_c:
+    build: ./APIC
+    ports:
+      - "8503:8503"
+      - "8003:8003"
+    depends_on:
+      - db_z
+    environment:
+      - db_host=estudiante_zdb_1
+      - db_user=root
+      - db_password=123456
+      - db_database=zdb
+      - model_path=../M_1/data/model.pkl
+    deploy:
+      replicas: 1
+      resources:
+        limits:
+          cpus: "0.3"
+          memory: 500M
+#API_D
+  app_d:
+    build: ./APID
+    deploy:
+      replicas: 1
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 800M
+    ports:
+      - '8504:8504'
+      - "8004:8004"
+    volumes:
+      - ./app:/app
+#  ml:
+#    build: .
+#    ports:
+#      - "8505:8505"
+#    volumes:
+#      - ml-model:/app
+#volumes:
+#  mysql-data:
+#  ml-model:  

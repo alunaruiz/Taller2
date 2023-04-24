@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.26.0 (40646f47)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: model
+  name: model
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: model
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert
+        kompose.version: 1.26.0 (40646f47)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: model
+    spec:
+      containers:
+        - image: model
+          name: model
+          ports:
+            - containerPort: 3308
+          resources: {}
+          volumeMounts:
+            - mountPath: /app/model
+              name: model-claim0
+      restartPolicy: Always
+      volumes:
+        - name: model-claim0
+          persistentVolumeClaim:
+            claimName: model-claim0
+status: {}
