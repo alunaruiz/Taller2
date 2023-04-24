@@ -4,6 +4,7 @@ Taller 2 - Topicos Avanzados en IA
 INSTRUCCIONES
 1. Opción a: ejecutar docker-compose
    Opción b: ejecutar minikube
+   Estas opciones también están disponibles desde la máquina virtual de la universidad a través del acceso por VPN a las IP y puertos descritos.
 
 2. Descargar y crear el set de datos para el proyecto:
 
